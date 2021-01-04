@@ -8,7 +8,7 @@ class TodoList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            todos: []
+            todos: JSON.parse(window.localStorage.getItem("todos") || "[]")
         };
 
         this.addTodo = this.addTodo.bind(this);
@@ -17,16 +17,27 @@ class TodoList extends Component {
         this.toggleCompletion = this.toggleCompletion.bind(this);
     }
 
+    syncLocalStorage() {
+        window.localStorage.setItem(
+            "todos",
+            JSON.stringify(this.state.todos)
+        );
+    }
+
     addTodo(todo) {
         this.setState({
             todos: [...this.state.todos, todo]
-        });
+        },
+        this.syncLocalStorage
+        );
     }
 
     removeTodo(id) {
         this.setState({
             todos: this.state.todos.filter(todo => todo.id !== id)
-        });
+        },
+        this.syncLocalStorage
+        );
     }
 
     updateTodo(id, update) {
@@ -38,7 +49,9 @@ class TodoList extends Component {
         });
         this.setState({
             todos: updateTodos
-        });
+        },
+        this.syncLocalStorage
+        );
     }
 
     toggleCompletion(id) {
@@ -50,7 +63,9 @@ class TodoList extends Component {
         });
         this.setState({
             todos: updateTodos
-        });
+        },
+        this.syncLocalStorage
+        );
     }
 
     render() {
@@ -73,7 +88,7 @@ class TodoList extends Component {
         return (
             <div className="TodoList">
                 <h1>
-                    Get To Work! <span>An Animated Todo List</span>
+                    Get To Work! <span>an animated todo list</span>
                 </h1>
                 <NewTodoForm addTodo={this.addTodo} />
 
